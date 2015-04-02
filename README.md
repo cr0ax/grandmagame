@@ -14,6 +14,8 @@ Some utility functions for ranking poker hands can be found <a href="pokerhands.
 
 Here is the eponymous game, it's <a href="videopoker.class.js">jacks or better video poker</a>
 
+####how to?
+
 Deck class provides
 ```javascript
 deck()    //constructor
