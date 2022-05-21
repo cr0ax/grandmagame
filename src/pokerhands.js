@@ -1,3 +1,4 @@
+import { Deck as deck } from './deck';
 /*
 	Classify an array as a certain poker hand,
 	rank poker hands against each other.
@@ -10,15 +11,14 @@ function pokerHands(){}
 
 /////////////////////Some array utilities//////////////////////////////////
 
-	//the name says it all
-	allEqual = function(){
-		for(var ii = 0; ii < arguments.length; ii++){
-			if(arguments[0] != arguments[ii]){
-				return false;
-			}
-		}
-		return true;
-	}
+	// allEqual = function(){
+	// 	for(var ii = 0; ii < arguments.length; ii++){
+	// 		if(arguments[0] != arguments[ii]){
+	// 			return false;
+	// 		}
+	// 	}
+	// 	return true;
+	// }
 
 	//looks like it attaches "all equal" to Array...
 	//also serves to show the value of commenting your work when you actually do it...
@@ -60,7 +60,7 @@ function pokerHands(){}
 	/*
 		Return the highest non-zero that
 		occurs n times in the array.
-		If there isn't one, default to 0.
+		If there isn't one, default to -1
 	*/
 	Array.prototype.matching = function(n){
 		var temp = this.sort(function(a,b){return b-a});
@@ -70,7 +70,7 @@ function pokerHands(){}
 				return temp[ii];
 			}
 		}
-		return 0;
+		return -1;
 	}
 
 
@@ -94,6 +94,17 @@ function pokerHands(){}
 		var retArray = [];
 		for(var ii = 0; ii < cardArray.length; ii++){
 			retArray[ii] = pokerHands.pointValue(deck.getValue(cardArray[ii]));
+		}
+		return retArray.sort(function(a,b){return b-a});
+	}
+
+	//change a hand into a (sorted) array of point values
+	pokerHands.valuateAceLow = function(cardArray){
+		var retArray = [];
+		for(var ii = 0; ii < cardArray.length; ii++){
+            var value = pokerHands.pointValue(deck.getValue(cardArray[ii]));
+            if(value === 14) { value = 1; }
+			retArray[ii] = value;
 		}
 		return retArray.sort(function(a,b){return b-a});
 	}
@@ -129,24 +140,22 @@ function pokerHands(){}
 	/*
 		If there are two or more distinct pairs of values
 		in this hand, return the values of the highest of the two.
-		else return 0
+		else return -1
 	*/
 	pokerHands.twoPair = function(cardArray){
 		var highPair = pokerHands.onePair(cardArray);
 		var temp = pokerHands.valuate(cardArray).filter(function(a){return (a != highPair)});
-		console.log(cardArray);
-		console.log(temp);
-		if(temp.matching(2) != 0){
+		if(temp.matching(2) != -1){
 			return highPair;
 		}
-		return 0;
+		return -1;
 	}
 
 
 	/*
 		Return a value from 2 to 14 (2 to A)
 		representing the highest pair in the hand
-		return 0 if there is not a pair in the hand
+		return -1 if there is not a pair in the hand
 	*/
 	pokerHands.onePair = function(cardArray){
 		var temp = pokerHands.valuate(cardArray);
@@ -176,20 +185,26 @@ function pokerHands(){}
 	pokerHands.fullHouse = function(cardArray){
 		var highTrip = pokerHands.trips(cardArray); //get the high trips
 		var temp = pokerHands.valuate(cardArray).filter(function(a){return (a != highTrip)});
-		if(pokerHands.onePair(temp) != 0){
+		if(pokerHands.onePair(temp) != -1){
 			return highTrip;
 		}
-		return 0;
+		return -1;
 	}
 	/*
 		Determines if the hand contains 5 cards in a row
+        Returns the highest of them
 	*/
 	pokerHands.straight = function(cardArray){
-		var temp = pokerHands.valuate(cardArray).removeDuplicates();
-		var retVal = 0;
-		for(var ii = 0; ii < temp.length-4; ii++){
-			if(temp.slice(ii, ii+5).inOrder()){
-				return temp[ii];
+		var tempAceHigh = pokerHands.valuate(cardArray).removeDuplicates();
+		var tempAceLow = pokerHands.valuateAceLow(cardArray).removeDuplicates();
+        var length = tempAceLow.length;
+		var retVal = -1;
+		for(var ii = 0; ii < length-4; ii++){
+			if(tempAceHigh.slice(ii, ii+5).inOrder()){
+				return tempAceHigh[ii];
+			}
+			if(tempAceLow.slice(ii, ii+5).inOrder()){
+				return tempAceLow[ii];
 			}
 		}
 		return retVal;
@@ -200,7 +215,7 @@ function pokerHands(){}
 	*/
 	pokerHands.flush = function(cardArray){
 		var temp = pokerHands.color(cardArray);
-		return (temp.matching(5) != 0);
+		return (temp.matching(5) != -1);
 	}
 
 	/*
@@ -210,10 +225,10 @@ function pokerHands(){}
 	pokerHands.straightFlush = function(cardArray){
 		var str8 = pokerHands.straight(cardArray);
 		var flsh = pokerHands.flush(cardArray);
-		if((str8 != 0) && flsh){
+		if((str8 != -1) && flsh){
 			return str8;
 		}
-		return 0;
+		return -1;
 	}
 
 	/*
@@ -221,7 +236,7 @@ function pokerHands(){}
 		straight flush and has a high card of A (14)
 	*/
 	pokerHands.royalFlush = function(cardArray){
-		return ((pokerHands.straightFlush(cardArray) == 14) ? 14 : 0);
+		return ((pokerHands.straightFlush(cardArray) == 14) ? 14 : -1);
 	}
 
 
@@ -245,39 +260,41 @@ function pokerHands(){}
 	*/
 	pokerHands.rank = function(cardArray){
 
-		if(pokerHands.royalFlush(cardArray) != 0){
+		if(pokerHands.royalFlush(cardArray) != -1){
 			return 9;
 		}
-		if(pokerHands.straightFlush(cardArray) != 0){
+		if(pokerHands.straightFlush(cardArray) != -1){
 			return 8;
 		}
-		if(pokerHands.quads(cardArray) != 0){
+		if(pokerHands.quads(cardArray) != -1){
 			return 7;
 		}
-		if(pokerHands.fullHouse(cardArray) != 0){
+		if(pokerHands.fullHouse(cardArray) != -1){
 			return 6;
 		}
 		if(pokerHands.flush(cardArray)){
 			return 5;
 		}
-		if(pokerHands.straight(cardArray) != 0){
+		if(pokerHands.straight(cardArray) != -1){
 			return 4;
 		}
-		if(pokerHands.trips(cardArray) != 0){
+		if(pokerHands.trips(cardArray) != -1){
 			return 3;
 		}
-		if(pokerHands.twoPair(cardArray) != 0){
+		if(pokerHands.twoPair(cardArray) != -1){
 			return 2;
 		}
-		if(pokerHands.onePair(cardArray) >= 11){ //jacks or better...
+        const onePair = pokerHands.onePair(cardArray);
+        if(onePair >= 11 || onePair === 0 || onePair === 1) { // (jacks or better or A or K)
 			return 1;
 		}
+
 		return 0;
 
 	}
 
 
-	pokerHands.key =[ 	'high card', 'one pair', 'two pair',
+	pokerHands.key =['high card', 'one pair', 'two pair',
 				'3 of a kind', 'straight', 'flush',
 				'full house', '4 of a kind', 'straight flush',
 				'royal flush!'
@@ -287,4 +304,4 @@ function pokerHands(){}
 	pokerHands.payoutMultiplier = [0,1,2,3,4,6,9,25,50,250];
 
 
-
+export const PokerHands = pokerHands;

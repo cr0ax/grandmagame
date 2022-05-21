@@ -10,7 +10,7 @@
 
 
 	This class contains
-	"shuffle", which randomizes the 52 card deck.
+	"shuffle", which randomizes the 52 card Deck.
 	an index to select the card,
 	and a pop function that moves the index
 
@@ -56,7 +56,7 @@
 
 
 */
-function deck(x){
+export function Deck(x){
 	this.cards = []; //x card deck
 
 	this.numCards = x || 52;
@@ -184,7 +184,7 @@ function deck(x){
 
 		var outDeck = [];
 		for(var ii = 0; ii < 52; ii++){
-			outDeck.push(' '+deck.getSymbolic(this.getCard(ii))+' ');
+			outDeck.push(' '+Deck.getSymbolic(this.getCard(ii))+' ');
 		}
 
 		return outDeck;
@@ -201,17 +201,17 @@ function deck(x){
 
 
 //gets the value of the card for internal work
-	deck.getValue = function(x){
+	Deck.getValue = function(x){
 		return x%13;
 	}
 //gets the suit of the card for internal work
-	deck.getSuit = function(x){
+	Deck.getSuit = function(x){
 		return Math.floor(x/13);
 	}
 
 
 //certain special values are face cards, all else just numerical
-	deck.displayValue = function(value){
+	Deck.displayValue = function(value){
 		switch(parseInt(value)){
 			case 0:
 				value = 'K';
@@ -232,7 +232,7 @@ function deck(x){
 
 
 //Return one of : ♠♤♥♡♣♧♦♢ depending on which of 4 numbers the arg is
-	deck.displaySuit = function(suit){
+	Deck.displaySuit = function(suit){
 
 		switch(parseInt(suit)){
 			case 0:
@@ -253,7 +253,7 @@ function deck(x){
 
 
 //Change a card value into its symbolic form
-	deck.getSymbolic = function(x){
+	Deck.getSymbolic = function(x){
 		var str = "";
 		str+=this.displayValue(this.getValue(x));
 		str+=this.displaySuit(this.getSuit(x));
