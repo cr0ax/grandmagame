@@ -7,7 +7,7 @@ module.exports = {
     entry: './src/App.tsx',
     output: {
         filename: 'main.js',
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, 'dist/poker'),
     },
     resolve: {
         // Add `.ts` and `.tsx` as a resolvable extension.
