@@ -239,7 +239,7 @@ export function Deck(x){
 				suit = String.fromCodePoint("0x2660");
 				break;
 			case 1:
-				suit = String.fromCodePoint("2663");
+				suit = String.fromCodePoint("0x2663");
 				break;
 			case 2:
 				suit = String.fromCodePoint("0x2665");
