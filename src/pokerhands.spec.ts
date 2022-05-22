@@ -14,6 +14,20 @@ describe('Hand ranking test', () => {
     // console.log(hand.map(card => Deck.getSymbolic(card)));
     expect(PokerHands.key[PokerHands.rank(hand)]).toBe("straight");
   });
+  it('ranks trips', () => {
+    for(let i = 0; i < 13; i++) {
+      expect(
+        PokerHands.key[PokerHands.rank([i,i+13,i+(13*2)])]
+      ).toBe("3 of a kind");
+    }
+  });
+  it('ranks quads', () => {
+    for(let i = 0; i < 13; i++) {
+      expect(
+        PokerHands.key[PokerHands.rank([i,i+13,i+(13*2),i+(13*3)])]
+      ).toBe("4 of a kind");
+    }
+  });
   it('ranks [k,a,2,3,4] as high card A', () => {
     const hand = [0,1,2,3,17];
     // console.log(hand.map(card => Deck.getSymbolic(card)));
