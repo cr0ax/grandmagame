@@ -76,6 +76,7 @@ export function VideoPoker(){
 			}
 		}
 		setCurrentHand(tempHand);
+		return tempHand;
 	}
 
 	function toggleCard(i: number){
@@ -90,12 +91,11 @@ export function VideoPoker(){
 		setCurrentBet(currentBet + n);
 	}
 
-	function payout(){
-		var rank = PokerHands.rank(currentHand);
+	function payout(hand){
+		var rank = PokerHands.rank(hand);
 		var multiplier = PokerHands.payoutMultiplier[rank];
 		var payout = currentBet*multiplier;
-		console.log(rank, multiplier, payout);
-		setPayoutText(`Hand: ${PokerHands.key[rank]} Paid: ${payout}`);
+		setPayoutText(`Hand: ${PokerHands.key[rank]}, Paid: ${payout}`);
 		setPoints(points + payout);
 		setCurrentBet(0);
 	}
@@ -126,8 +126,8 @@ export function VideoPoker(){
 		}
 		else if(currentGameState === GameState.Selecting){
 			// deal cards again, payout, and move to complete
-			dealCards();
-			payout();
+			const finalHand = dealCards();
+			payout(finalHand);
 			setCurrentGameState(GameState.Complete);
 		}
 		else if(currentGameState === GameState.Complete){

@@ -4,10 +4,18 @@ import { Deck } from './deck';
 
 describe('Hand ranking test', () => {
   it('ranks one-pair', () => {
+    // kings
     expect(PokerHands.key[PokerHands.rank([0,13])]).toBe("one pair");
+    expect(PokerHands.key[PokerHands.rank([13,26])]).toBe("one pair");
+    expect(PokerHands.key[PokerHands.rank([26,39])]).toBe("one pair");
+    // aces
     expect(PokerHands.key[PokerHands.rank([1,14])]).toBe("one pair");
-    expect(PokerHands.key[PokerHands.rank([11,24])]).toBe("one pair");
-    expect(PokerHands.key[PokerHands.rank([12,25])]).toBe("one pair");
+    expect(PokerHands.key[PokerHands.rank([14,27])]).toBe("one pair");
+    expect(PokerHands.key[PokerHands.rank([27,40])]).toBe("one pair");
+
+    const hand = [36,45,27,1,48];
+    console.log(hand.map(card => Deck.getSymbolic(card)));
+    expect(PokerHands.key[PokerHands.rank(hand)]).toBe("one pair");
   });
   it('ranks straight A-5 as straight', () => {
     const hand = [1,2,3,4,18];
