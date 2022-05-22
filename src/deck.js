@@ -236,16 +236,16 @@ export function Deck(x){
 
 		switch(parseInt(suit)){
 			case 0:
-				suit = '♠';
+				suit = String.fromCodePoint("0x2660");
 				break;
 			case 1:
-				suit = '♣';
+				suit = String.fromCodePoint("2663");
 				break;
 			case 2:
-				suit = '♥';
+				suit = String.fromCodePoint("0x2665");
 				break;
 			case 3:
-				suit = '♦';
+				suit = String.fromCodePoint("0x2666");
 				break;
 		}
 		return suit;
